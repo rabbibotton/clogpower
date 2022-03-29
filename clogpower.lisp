@@ -17,11 +17,9 @@
     (create-br (left-panel layout))
     (flet ((item (text url)
 	     (let ((item (create-div (left-panel layout))))
-	       (set-on-click item (lambda (obj)
-				    (open-window (window body) url)))
 	       (create-br (left-panel layout))
-	       (create-span item :content text :class "w3-text-yellow")
-	       (setf (cursor item) :alias)
+	       (create-a item :content text :link url :class "w3-text-yellow")
+	       (setf (cursor item) :pointer)
 	       (setf (style item "font-size") "18px")
 	       (setf (style item "font-family") "Special Elite"))))
       (item "Learn to CLOG" "https://github.com/rabbibotton/clog/blob/main/README.md")
@@ -33,6 +31,7 @@
 
 (defun on-new-window (body)
   (setf (title (html-document body)) "clogpower.com")
+  (set-html-on-close body "<script>location.reload();</script>")
   (clog-gui-initialize body)
   (add-class body "w3-black")
   (let ((about-div (create-div body :class "w3-center w3-black w3-animate-top"
@@ -54,7 +53,9 @@
       (unless done
 	(set-geometry blimp :bottom (+ n (random 3)) :right (+ n (random 3)))	  
 	(sleep .05)))
-    (unless done (main-screen body))))
+    (unless done
+      (setf (inner-html body) "")
+      (main-screen body))))
 
 (defun start-app ()
   (initialize 'on-new-window
