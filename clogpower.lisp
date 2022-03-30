@@ -32,8 +32,7 @@
       (item "Learn Common Lisp" "https://github.com/rabbibotton/clog/blob/main/LEARN.md")
       (item "Get CLOG" "https://github.com/rabbibotton/clog")
       (item "About CLOG" "https://github.com/rabbibotton/clog/blob/main/README.md")
-      (item "The CLOG Team" "https://www.reddit.com/r/lisp/search/?q=clog"))))
-      
+      (item "The CLOG Team" "https://www.reddit.com/r/lisp/search?q=clog&restrict_sr=on"))))
 
 (defun on-new-window (body)
   "New browser connection made, display splash screen"
