@@ -32,7 +32,52 @@
       (item "Learn Common Lisp" "https://github.com/rabbibotton/clog/blob/main/LEARN.md")
       (item "Get CLOG" "https://github.com/rabbibotton/clog")
       (item "About CLOG" "https://github.com/rabbibotton/clog/blob/main/README.md")
-      (item "The CLOG Team" "https://www.reddit.com/r/lisp/search?q=clog&restrict_sr=on"))))
+      (item "The CLOG Team" "https://www.reddit.com/r/lisp/search?q=clog&restrict_sr=on"))
+    ;; Create a chat button that launches in a floating window
+    (let ((chat-button (create-button (left-panel layout) :content "Chat")))
+      (setf (style chat-button "font-size") "18px")
+      (setf (style chat-button "font-family") "Special Elite")
+      (set-on-click chat-button
+		    (lambda (obj)
+		      ;; We use keep-on-top for floating clog-gui windows not in a clog-gui
+		      ;; desktop
+		      (input-dialog obj "Enter your chat handle:"
+				    (lambda (result)
+				      (when result
+					(let* ((win    (create-gui-window obj :keep-on-top t
+									      :title "lichat"))
+					       ;; We use builder to create the chat box
+					       (talker (create-clog-lichat-talker (window-content win))))
+
+					  (setf (chat talker) (make-instance 'lichat-tcp-client:client
+									     :username result
+									     :hostname "chat.tymoon.eu"))
+					  (lichat-tcp-client:open-connection (chat talker))
+					  (lichat-tcp-client:s (chat talker)
+							       'join
+							       :channel "lichatters")
+					  (defmethod lichat-tcp-client:process ((update lichat-protocol:message)
+										(client (eql (chat talker))))
+					    (create-div (chat-box talker)
+							:content (format nil "~a - ~a"
+									 (lichat-protocol:from update)
+									 (lichat-protocol:text update)))
+					    (setf (scroll-top (chat-box talker)) (scroll-height (chat-box talker))))
+					  ;; Use run body to hold a thread until connection to browser dies
+					  ;; Once gone, sever connection with the chat server.
+					  (run body)
+					  (lichat-tcp-client:close-connection (chat talker))
+					  ;; Log disconnect
+					  (format t "Chat disconnect - ~a" result))))
+				    :title "Handle"))))))
+
+(defun send-message (panel)
+  "Chat send button event handler"
+  (lichat-tcp-client:s (chat panel)
+		       'message
+		       :channel "lichatters"
+		       :text (text-value (chat-area panel)))
+  (setf (text-value (chat-area panel)) ""))
 
 (defun on-new-window (body)
   "New browser connection made, display splash screen"
