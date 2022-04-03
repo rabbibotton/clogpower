@@ -69,7 +69,17 @@
 					  (lichat-tcp-client:close-connection (chat talker))
 					  ;; Log disconnect
 					  (format t "Chat disconnect - ~a" result))))
-				    :title "Handle"))))))
+				    :title "Handle"))))
+    (sleep 1)
+    (let ((alien (create-img (center-panel layout)
+			     :url-src "/img/clog-alien.png"
+			     :hidden t)))
+      (setf (positioning alien) :absolute)
+      (set-geometry alien :bottom -250 :left 0)
+      (add-class alien "w3-animate-left")
+      (setf (visiblep alien) t)
+      (sleep 2)
+      (destroy alien))))
 
 (defun send-message (panel)
   "Chat send button event handler"
