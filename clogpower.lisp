@@ -128,6 +128,8 @@
       (main-screen body))))
 
 (defun start-site ()
+  ;; Turn off debugger launches for production runs
+  (setf clog-connection:*break-on-error* nil)
   (initialize 'on-new-window
    :static-root (merge-pathnames "./www/"
 		  (asdf:system-source-directory :clogpower)))
