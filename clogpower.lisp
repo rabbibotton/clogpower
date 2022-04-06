@@ -127,10 +127,24 @@
       (setf (inner-html body) "")
       (main-screen body))))
 
+(defun add-search-optimizations (path content)
+  ;; The default boot.html that comes with CLOG has template
+  ;; markers inside of the meta section and body section
+  ;; that are set to be transparent to the user but show to
+  ;; search engines and text browser. This allows setting
+  ;; custom data for search engine optimizations which are
+  ;; aware of these type of dynamic sites.
+  (declare (ignore path))
+  (funcall (cl-template:compile-template content)
+	   (list :meta "<meta name='description' content='CLOGPower.com CLOG Framework Home Page'>
+                        <meta name='author' content='David Botton'>"
+		 :body "CLOGPower.com - CLOG the Common Lisp Omnificient GUI
+                        a site dedicated to CLOG.")))
+
 (defun start-site ()
   ;; Turn off debugger launches for production runs
   (setf clog-connection:*break-on-error* nil)
-  (initialize 'on-new-window
+  (initialize 'on-new-window :boot-function 'add-search-optimizations
    :static-root (merge-pathnames "./www/"
 		  (asdf:system-source-directory :clogpower)))
   (open-browser))
