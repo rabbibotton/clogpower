@@ -59,7 +59,7 @@
   ;; Setup database connection
   (when *sql-connection*
     (dbi:disconnect *sql-connection*))
-  (let ((db-dir (format nil "~A~A" (asdf:system-source-directory :cweb) "clogpower.db")))
+  (let ((db-dir (format nil "~A~A" (asdf:system-source-directory :clogpower) "clogpower.db")))
     (setf *sql-connection* (dbi:connect :sqlite3 :database-name db-dir))
     (format t "Database location: ~A~%" db-dir))
   ;; Check if need to setup sample data
