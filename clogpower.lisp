@@ -76,9 +76,7 @@
 			    :static-root (merge-pathnames "./www/"
 							  (asdf:system-source-directory :clogpower)))
   (clog-web-routes-from-menu *menu*)
-  ;; open-browser when testing, fails to open on production server.
-  (open-browser))
-
+  (loop (sleep 360)))
 ;;
 ;; Look and Feel
 ;;
