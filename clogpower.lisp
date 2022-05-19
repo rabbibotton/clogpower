@@ -44,7 +44,7 @@
 		 :body "CLOGPower.com - CLOG the Common Lisp Omnificient GUI
                         a site dedicated to CLOG.")))
 
-(defun start-site ()
+(defun start-site (&key (port 8080))
   ;; Setup authorizations between roles and actions
   ;; multiple roles can be activated to multiple actions
   ;; A user can be assign many roles
@@ -73,6 +73,7 @@
   (initialize 'on-clogpower :boot-function 'add-search-optimizations
 			    :long-poll-first t
 			    :extended-routing t
+			    :port port
 			    :static-root (merge-pathnames "./www/"
 							  (asdf:system-source-directory :clogpower)))
   (clog-web-routes-from-menu *menu*)
